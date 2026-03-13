@@ -53,8 +53,7 @@
           type="checkbox"
           class="toggle-input"
         />
-        <span class="toggle-text"
-003e🤖 让 AI 分析利弊（需要配置 API Key）</span>
+        <span class="toggle-text">🤖 让 AI 分析利弊（需要配置 API Key）</span>
       </label>
     </div>
 
