@@ -57,6 +57,31 @@
       </label>
     </div>
 
+    <!-- API Key 设置 -->
+    <div class="api-key-section">
+      <div class="api-key-header" @click="showApiKeyInput = !showApiKeyInput">
+        <span class="api-key-status">
+          {{ store.apiKey ? '🔑 API Key 已配置' : '⚙️ 配置 API Key' }}
+        </span>
+        <span class="api-key-toggle">{{ showApiKeyInput ? '▲' : '▼' }}</span>
+      </div>
+      <div v-if="showApiKeyInput" class="api-key-input-wrapper">
+        <input
+          v-model="apiKeyInput"
+          type="password"
+          placeholder="输入你的 Kimi API Key"
+          class="api-key-input"
+        />
+        <div class="api-key-actions">
+          <button class="btn-save-key" @click="saveApiKey">保存</button>
+          <button v-if="store.apiKey" class="btn-clear-key" @click="clearApiKey">清除</button>
+        </div>
+        <p class="api-key-hint">
+          获取 API Key：<a href="https://platform.moonshot.cn/" target="_blank">platform.moonshot.cn</a>
+        </p>
+      </div>
+    </div>
+
     <!-- 做决定按钮 -->
     <button 
       class="btn-decide"
@@ -137,6 +162,8 @@ const options = ref(['', ''])
 const useAI = ref(false)
 const deciding = ref(false)
 const result = ref(null)
+const showApiKeyInput = ref(false)
+const apiKeyInput = ref('')
 
 const canDecide = computed(() => {
   return options.value.filter(o => o.trim()).length >= 2
@@ -150,6 +177,21 @@ const addOption = () => {
 
 const removeOption = (index) => {
   options.value.splice(index, 1)
+}
+
+const saveApiKey = () => {
+  if (apiKeyInput.value.trim()) {
+    store.setApiKey(apiKeyInput.value.trim())
+    apiKeyInput.value = ''
+    showApiKeyInput.value = false
+    alert('API Key 已保存')
+  }
+}
+
+const clearApiKey = () => {
+  store.setApiKey('')
+  apiKeyInput.value = ''
+  alert('API Key 已清除')
 }
 
 const makeDecision = async () => {
@@ -561,6 +603,105 @@ const reviewText = (review) => {
 .review-badge.neutral {
   background: #F3F4F6;
   color: #4B5563;
+}
+
+.api-key-section {
+  background: var(--surface);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.api-key-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.api-key-header:hover {
+  background: var(--bg);
+}
+
+.api-key-status {
+  font-size: 14px;
+  color: var(--text);
+}
+
+.api-key-toggle {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.api-key-input-wrapper {
+  padding: 0 20px 20px;
+}
+
+.api-key-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  font-size: 14px;
+  font-family: inherit;
+  margin-bottom: 12px;
+}
+
+.api-key-input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.api-key-actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.btn-save-key,
+.btn-clear-key {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-save-key {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-save-key:hover {
+  background: var(--primary-hover);
+}
+
+.btn-clear-key {
+  background: var(--border);
+  color: var(--text);
+}
+
+.btn-clear-key:hover {
+  background: #FEE2E2;
+  color: #EF4444;
+}
+
+.api-key-hint {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.api-key-hint a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.api-key-hint a:hover {
+  text-decoration: underline;
 }
 
 @media (max-width: 640px) {
